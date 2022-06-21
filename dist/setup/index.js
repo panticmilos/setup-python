@@ -64555,7 +64555,7 @@ function resolveVersionInput() {
     }
     versionFile = versionFile || '.python-version';
     if (!fs_1.default.existsSync(versionFile)) {
-        throw new Error(`The specified python version file at: ${versionFile} does not exist`);
+        throw new Error(`Could not determine Python version to set up. Please either specify a version using python-version in the action configuration, or path to a valid version file using python-version-file. The version file currently in effect, ${versionFile}, does not exist.`);
     }
     version = fs_1.default.readFileSync(versionFile, 'utf8');
     core.info(`Resolved ${versionFile} as ${version}`);
