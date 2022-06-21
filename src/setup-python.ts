@@ -39,7 +39,7 @@ function resolveVersionInput(): string {
   versionFile = versionFile || '.python-version';
   if (!fs.existsSync(versionFile)) {
     throw new Error(
-      `The specified python version file at: ${versionFile} does not exist`
+      `Could not determine Python version to set up. Please either specify a version using python-version in the action configuration, or path to a valid version file using python-version-file. The version file currently in effect, ${versionFile}, does not exist.`
     );
   }
   version = fs.readFileSync(versionFile, 'utf8');
