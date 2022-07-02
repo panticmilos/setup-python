@@ -64430,8 +64430,8 @@ class PipCache extends cache_distributor_1.default {
     computeKeys() {
         return __awaiter(this, void 0, void 0, function* () {
             const hash = yield glob.hashFiles(this.cacheDependencyPath);
-            const primaryKey = `${this.CACHE_KEY_PREFIX}-${process.env['RUNNER_OS']}-python-${this.pythonVersion}-${this.packageManager}-${hash}`;
-            const restoreKey = `${this.CACHE_KEY_PREFIX}-${process.env['RUNNER_OS']}-python-${this.pythonVersion}-${this.packageManager}`;
+            const primaryKey = `${this.CACHE_KEY_PREFIX}-${process.env['RUNNER_OS']}-${os_1.default.release()}-python-${this.pythonVersion}-${this.packageManager}-${hash}`;
+            const restoreKey = `${this.CACHE_KEY_PREFIX}-${process.env['RUNNER_OS']}-${os_1.default.release()}-python-${this.pythonVersion}-${this.packageManager}`;
             return {
                 primaryKey,
                 restoreKey: [restoreKey]
