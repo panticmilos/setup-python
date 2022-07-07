@@ -10,6 +10,9 @@ export const WINDOWS_ARCHS = ['x86', 'x64'];
 export const WINDOWS_PLATFORMS = ['win32', 'win64'];
 const PYPY_VERSION_FILE = 'PYPY_VERSION';
 
+import * as exec from '@actions/exec';
+
+import os from 'os';
 export interface IPyPyManifestAsset {
   filename: string;
   arch: string;
@@ -119,3 +122,46 @@ export function isCacheFeatureAvailable(): boolean {
 
   return true;
 }
+
+export async function getOSRelease() {
+  if(IS_WINDOWS) {
+    return os.release();
+  } else if(IS_LINUX) {
+    const version = await exec.getExecOutput('cat', ['/etc/*release | grep -E ^NAME']);
+    return version.stdout.split('=')[1];
+  } else {
+    macosRelease(os.release())
+  }
+}
+
+export default function macosRelease(release : string) {
+	const macRelease = Number((release || os.release()).split('.')[0]);
+
+	const [name, version] = nameMap.get(macRelease) || ['Unknown', ''];
+
+	return {
+		name,
+		version,
+	};
+}
+
+const nameMap = new Map([
+	[22, ['Ventura', '13']],
+	[21, ['Monterey', '12']],
+	[20, ['Big Sur', '11']],
+	[19, ['Catalina', '10.15']],
+	[18, ['Mojave', '10.14']],
+	[17, ['High Sierra', '10.13']],
+	[16, ['Sierra', '10.12']],
+	[15, ['El Capitan', '10.11']],
+	[14, ['Yosemite', '10.10']],
+	[13, ['Mavericks', '10.9']],
+	[12, ['Mountain Lion', '10.8']],
+	[11, ['Lion', '10.7']],
+	[10, ['Snow Leopard', '10.6']],
+	[9, ['Leopard', '10.5']],
+	[8, ['Tiger', '10.4']],
+	[7, ['Panther', '10.3']],
+	[6, ['Jaguar', '10.2']],
+	[5, ['Puma', '10.1']],
+]);

@@ -64430,8 +64430,9 @@ class PipCache extends cache_distributor_1.default {
     computeKeys() {
         return __awaiter(this, void 0, void 0, function* () {
             const hash = yield glob.hashFiles(this.cacheDependencyPath);
-            const primaryKey = `${this.CACHE_KEY_PREFIX}-${process.env['RUNNER_OS']}-${os_1.default.release()}-python-${this.pythonVersion}-${this.packageManager}-${hash}`;
-            const restoreKey = `${this.CACHE_KEY_PREFIX}-${process.env['RUNNER_OS']}-${os_1.default.release()}-python-${this.pythonVersion}-${this.packageManager}`;
+            const osRelease = utils_1.getOSRelease();
+            const primaryKey = `${this.CACHE_KEY_PREFIX}-${process.env['RUNNER_OS']}-${osRelease}-python-${this.pythonVersion}-${this.packageManager}-${hash}`;
+            const restoreKey = `${this.CACHE_KEY_PREFIX}-${process.env['RUNNER_OS']}-${osRelease}-python-${this.pythonVersion}-${this.packageManager}`;
             return {
                 primaryKey,
                 restoreKey: [restoreKey]
@@ -65347,11 +65348,20 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.isCacheFeatureAvailable = exports.isGhes = exports.validatePythonVersionFormatForPyPy = exports.writeExactPyPyVersionFile = exports.readExactPyPyVersionFile = exports.getPyPyVersionFromPath = exports.isNightlyKeyword = exports.validateVersion = exports.createSymlinkInFolder = exports.WINDOWS_PLATFORMS = exports.WINDOWS_ARCHS = exports.IS_LINUX = exports.IS_WINDOWS = void 0;
+exports.getOSRelease = exports.isCacheFeatureAvailable = exports.isGhes = exports.validatePythonVersionFormatForPyPy = exports.writeExactPyPyVersionFile = exports.readExactPyPyVersionFile = exports.getPyPyVersionFromPath = exports.isNightlyKeyword = exports.validateVersion = exports.createSymlinkInFolder = exports.WINDOWS_PLATFORMS = exports.WINDOWS_ARCHS = exports.IS_LINUX = exports.IS_WINDOWS = void 0;
 const cache = __importStar(__nccwpck_require__(7799));
 const core = __importStar(__nccwpck_require__(2186));
 const fs_1 = __importDefault(__nccwpck_require__(7147));
@@ -65362,6 +65372,8 @@ exports.IS_LINUX = process.platform === 'linux';
 exports.WINDOWS_ARCHS = ['x86', 'x64'];
 exports.WINDOWS_PLATFORMS = ['win32', 'win64'];
 const PYPY_VERSION_FILE = 'PYPY_VERSION';
+const exec = __importStar(__nccwpck_require__(1514));
+const os_1 = __importDefault(__nccwpck_require__(2037));
 /** create Symlinks for downloaded PyPy
  *  It should be executed only for downloaded versions in runtime, because
  *  toolcache versions have this setup.
@@ -65440,6 +65452,50 @@ function isCacheFeatureAvailable() {
     return true;
 }
 exports.isCacheFeatureAvailable = isCacheFeatureAvailable;
+function getOSRelease() {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (exports.IS_WINDOWS) {
+            return os_1.default.release();
+        }
+        else if (exports.IS_LINUX) {
+            const version = yield exec.getExecOutput('cat', ['/etc/*release | grep -E ^NAME']);
+            return version.stdout.split('=')[1];
+        }
+        else {
+            macosRelease(os_1.default.release());
+        }
+    });
+}
+exports.getOSRelease = getOSRelease;
+function macosRelease(release) {
+    const macRelease = Number((release || os_1.default.release()).split('.')[0]);
+    const [name, version] = nameMap.get(macRelease) || ['Unknown', ''];
+    return {
+        name,
+        version,
+    };
+}
+exports["default"] = macosRelease;
+const nameMap = new Map([
+    [22, ['Ventura', '13']],
+    [21, ['Monterey', '12']],
+    [20, ['Big Sur', '11']],
+    [19, ['Catalina', '10.15']],
+    [18, ['Mojave', '10.14']],
+    [17, ['High Sierra', '10.13']],
+    [16, ['Sierra', '10.12']],
+    [15, ['El Capitan', '10.11']],
+    [14, ['Yosemite', '10.10']],
+    [13, ['Mavericks', '10.9']],
+    [12, ['Mountain Lion', '10.8']],
+    [11, ['Lion', '10.7']],
+    [10, ['Snow Leopard', '10.6']],
+    [9, ['Leopard', '10.5']],
+    [8, ['Tiger', '10.4']],
+    [7, ['Panther', '10.3']],
+    [6, ['Jaguar', '10.2']],
+    [5, ['Puma', '10.1']],
+]);
 
 
 /***/ }),

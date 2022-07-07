@@ -7,7 +7,7 @@ import * as path from 'path';
 import os from 'os';
 
 import CacheDistributor from './cache-distributor';
-import {IS_WINDOWS} from '../utils';
+import {getOSRelease, IS_WINDOWS} from '../utils';
 
 class PipCache extends CacheDistributor {
   constructor(
@@ -57,8 +57,10 @@ class PipCache extends CacheDistributor {
 
   protected async computeKeys() {
     const hash = await glob.hashFiles(this.cacheDependencyPath);
-    const primaryKey = `${this.CACHE_KEY_PREFIX}-${process.env['RUNNER_OS']}-${os.release()}-python-${this.pythonVersion}-${this.packageManager}-${hash}`;
-    const restoreKey = `${this.CACHE_KEY_PREFIX}-${process.env['RUNNER_OS']}-${os.release()}-python-${this.pythonVersion}-${this.packageManager}`;
+    const osRelease = getOSRelease();
+
+    const primaryKey = `${this.CACHE_KEY_PREFIX}-${process.env['RUNNER_OS']}-${osRelease}-python-${this.pythonVersion}-${this.packageManager}-${hash}`;
+    const restoreKey = `${this.CACHE_KEY_PREFIX}-${process.env['RUNNER_OS']}-${osRelease}-python-${this.pythonVersion}-${this.packageManager}`;
 
     return {
       primaryKey,
