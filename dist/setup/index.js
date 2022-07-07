@@ -65458,11 +65458,11 @@ function getOSRelease() {
             return os_1.default.release();
         }
         else if (exports.IS_LINUX) {
-            const version = yield exec.getExecOutput('cat', ['/etc/*release | grep -E ^NAME']);
+            const version = yield exec.getExecOutput('cat', ['cat /etc/os-release']);
             return version.stdout.split('=')[1];
         }
         else {
-            macosRelease(os_1.default.release());
+            return macosRelease(os_1.default.release());
         }
     });
 }
