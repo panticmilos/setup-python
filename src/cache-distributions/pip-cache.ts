@@ -57,7 +57,7 @@ class PipCache extends CacheDistributor {
 
   protected async computeKeys() {
     const hash = await glob.hashFiles(this.cacheDependencyPath);
-    const osRelease = getOSRelease();
+    const osRelease = await getOSRelease();
 
     const primaryKey = `${this.CACHE_KEY_PREFIX}-${process.env['RUNNER_OS']}-${osRelease}-python-${this.pythonVersion}-${this.packageManager}-${hash}`;
     const restoreKey = `${this.CACHE_KEY_PREFIX}-${process.env['RUNNER_OS']}-${osRelease}-python-${this.pythonVersion}-${this.packageManager}`;
