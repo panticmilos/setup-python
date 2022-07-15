@@ -127,7 +127,7 @@ export async function getOSRelease() {
   if(IS_WINDOWS) {
     return os.release();
   } else if(IS_LINUX) {
-    const version = await exec.getExecOutput('lsb_release', ['-r']);
+    const version = await exec.getExecOutput('lsb_release', ['-a']);
     core.info(version.stdout.split(':')[1].trim())
     return version.stdout.split(':')[1].trim();
   } else {
