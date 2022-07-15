@@ -65458,7 +65458,7 @@ function getOSRelease() {
             return os_1.default.release();
         }
         else if (exports.IS_LINUX) {
-            const versionId = yield exec.getExecOutput('lsb_release', ['-i']);
+            const versionId = yield exec.getExecOutput('lsb_release', ['-a']);
             let osVersion = '';
             let osRelease = '';
             core.info("1");
