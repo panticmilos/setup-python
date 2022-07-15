@@ -64430,9 +64430,17 @@ class PipCache extends cache_distributor_1.default {
     computeKeys() {
         return __awaiter(this, void 0, void 0, function* () {
             const hash = yield glob.hashFiles(this.cacheDependencyPath);
-            const osRelease = yield utils_1.getOSRelease();
-            const primaryKey = `${this.CACHE_KEY_PREFIX}-${process.env['RUNNER_OS']}-${osRelease}-python-${this.pythonVersion}-${this.packageManager}-${hash}`;
-            const restoreKey = `${this.CACHE_KEY_PREFIX}-${process.env['RUNNER_OS']}-${osRelease}-python-${this.pythonVersion}-${this.packageManager}`;
+            const osRelease = yield utils_1.getLinuxOSReleaseInfo();
+            let primaryKey = '';
+            let restoreKey = '';
+            if (utils_1.IS_LINUX) {
+                primaryKey = `${this.CACHE_KEY_PREFIX}-${process.env['RUNNER_OS']}-${osRelease}-python-${this.pythonVersion}-${this.packageManager}-${hash}`;
+                restoreKey = `${this.CACHE_KEY_PREFIX}-${process.env['RUNNER_OS']}-${osRelease}-python-${this.pythonVersion}-${this.packageManager}`;
+            }
+            else {
+                primaryKey = `${this.CACHE_KEY_PREFIX}-${process.env['RUNNER_OS']}-python-${this.pythonVersion}-${this.packageManager}-${hash}`;
+                restoreKey = `${this.CACHE_KEY_PREFIX}-${process.env['RUNNER_OS']}-python-${this.pythonVersion}-${this.packageManager}`;
+            }
             return {
                 primaryKey,
                 restoreKey: [restoreKey]
@@ -64487,6 +64495,7 @@ const os = __importStar(__nccwpck_require__(2037));
 const path = __importStar(__nccwpck_require__(1017));
 const core = __importStar(__nccwpck_require__(2186));
 const cache_distributor_1 = __importDefault(__nccwpck_require__(8953));
+const utils_1 = __nccwpck_require__(1314);
 class PipenvCache extends cache_distributor_1.default {
     constructor(pythonVersion, patterns = '**/Pipfile.lock') {
         super('pipenv', patterns);
@@ -64512,12 +64521,21 @@ class PipenvCache extends cache_distributor_1.default {
     }
     computeKeys() {
         return __awaiter(this, void 0, void 0, function* () {
-            const hash = yield glob.hashFiles(this.patterns);
-            const primaryKey = `${this.CACHE_KEY_PREFIX}-${process.env['RUNNER_OS']}-python-${this.pythonVersion}-${this.packageManager}-${hash}`;
-            const restoreKey = undefined;
+            const hash = yield glob.hashFiles(this.cacheDependencyPath);
+            const osRelease = yield utils_1.getLinuxOSReleaseInfo();
+            let primaryKey = '';
+            let restoreKey = '';
+            if (utils_1.IS_LINUX) {
+                primaryKey = `${this.CACHE_KEY_PREFIX}-${process.env['RUNNER_OS']}-${osRelease}-python-${this.pythonVersion}-${this.packageManager}-${hash}`;
+                restoreKey = `${this.CACHE_KEY_PREFIX}-${process.env['RUNNER_OS']}-${osRelease}-python-${this.pythonVersion}-${this.packageManager}`;
+            }
+            else {
+                primaryKey = `${this.CACHE_KEY_PREFIX}-${process.env['RUNNER_OS']}-python-${this.pythonVersion}-${this.packageManager}-${hash}`;
+                restoreKey = `${this.CACHE_KEY_PREFIX}-${process.env['RUNNER_OS']}-python-${this.pythonVersion}-${this.packageManager}`;
+            }
             return {
                 primaryKey,
-                restoreKey
+                restoreKey: [restoreKey]
             };
         });
     }
@@ -64568,6 +64586,7 @@ const glob = __importStar(__nccwpck_require__(8090));
 const path = __importStar(__nccwpck_require__(1017));
 const exec = __importStar(__nccwpck_require__(1514));
 const cache_distributor_1 = __importDefault(__nccwpck_require__(8953));
+const utils_1 = __nccwpck_require__(1314);
 class PoetryCache extends cache_distributor_1.default {
     constructor(pythonVersion, patterns = '**/poetry.lock') {
         super('poetry', patterns);
@@ -64588,8 +64607,15 @@ class PoetryCache extends cache_distributor_1.default {
     }
     computeKeys() {
         return __awaiter(this, void 0, void 0, function* () {
-            const hash = yield glob.hashFiles(this.patterns);
-            const primaryKey = `${this.CACHE_KEY_PREFIX}-${process.env['RUNNER_OS']}-python-${this.pythonVersion}-${this.packageManager}-${hash}`;
+            const hash = yield glob.hashFiles(this.cacheDependencyPath);
+            const osRelease = yield utils_1.getLinuxOSReleaseInfo();
+            let primaryKey = '';
+            if (utils_1.IS_LINUX) {
+                primaryKey = `${this.CACHE_KEY_PREFIX}-${process.env['RUNNER_OS']}-${osRelease}-python-${this.pythonVersion}-${this.packageManager}-${hash}`;
+            }
+            else {
+                primaryKey = `${this.CACHE_KEY_PREFIX}-${process.env['RUNNER_OS']}-python-${this.pythonVersion}-${this.packageManager}-${hash}`;
+            }
             const restoreKey = undefined;
             return {
                 primaryKey,
@@ -65361,7 +65387,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getOSRelease = exports.isCacheFeatureAvailable = exports.isGhes = exports.validatePythonVersionFormatForPyPy = exports.writeExactPyPyVersionFile = exports.readExactPyPyVersionFile = exports.getPyPyVersionFromPath = exports.isNightlyKeyword = exports.validateVersion = exports.createSymlinkInFolder = exports.WINDOWS_PLATFORMS = exports.WINDOWS_ARCHS = exports.IS_LINUX = exports.IS_WINDOWS = void 0;
+exports.getLinuxOSReleaseInfo = exports.isCacheFeatureAvailable = exports.isGhes = exports.validatePythonVersionFormatForPyPy = exports.writeExactPyPyVersionFile = exports.readExactPyPyVersionFile = exports.getPyPyVersionFromPath = exports.isNightlyKeyword = exports.validateVersion = exports.createSymlinkInFolder = exports.WINDOWS_PLATFORMS = exports.WINDOWS_ARCHS = exports.IS_LINUX = exports.IS_WINDOWS = void 0;
 const cache = __importStar(__nccwpck_require__(7799));
 const core = __importStar(__nccwpck_require__(2186));
 const fs_1 = __importDefault(__nccwpck_require__(7147));
@@ -65373,7 +65399,6 @@ exports.WINDOWS_ARCHS = ['x86', 'x64'];
 exports.WINDOWS_PLATFORMS = ['win32', 'win64'];
 const PYPY_VERSION_FILE = 'PYPY_VERSION';
 const exec = __importStar(__nccwpck_require__(1514));
-const os_1 = __importDefault(__nccwpck_require__(2037));
 /** create Symlinks for downloaded PyPy
  *  It should be executed only for downloaded versions in runtime, because
  *  toolcache versions have this setup.
@@ -65452,64 +65477,23 @@ function isCacheFeatureAvailable() {
     return true;
 }
 exports.isCacheFeatureAvailable = isCacheFeatureAvailable;
-function getOSRelease() {
+function getLinuxOSReleaseInfo() {
     return __awaiter(this, void 0, void 0, function* () {
-        if (exports.IS_WINDOWS) {
-            return os_1.default.release();
-        }
-        else if (exports.IS_LINUX) {
-            const versionId = yield exec.getExecOutput('lsb_release', ['-a']);
-            let osVersion = '';
-            let osRelease = '';
-            core.info("1");
-            core.info(versionId.stdout);
-            core.info("2");
-            versionId.stdout.split('\n').forEach(elem => {
-                if (elem.includes('Distributor'))
-                    osVersion = elem.split(':')[1].trim();
-                if (elem.includes('Release'))
-                    osRelease = elem.split(':')[1].trim();
-            });
-            core.info(osRelease);
-            core.info(osVersion);
-            return `${osVersion}-${osRelease}`;
-        }
-        else {
-            const macOSRelease = macosRelease(os_1.default.release());
-            return `${macOSRelease.name}_${macOSRelease.version}`;
-        }
+        const versionId = yield exec.getExecOutput('lsb_release', ['-a']);
+        let osVersion = '';
+        let osRelease = '';
+        versionId.stdout.split('\n').forEach(elem => {
+            if (elem.includes('Distributor'))
+                osVersion = elem.split(':')[1].trim();
+            if (elem.includes('Release'))
+                osRelease = elem.split(':')[1].trim();
+        });
+        core.info(osRelease);
+        core.info(osVersion);
+        return `${osVersion}-${osRelease}`;
     });
 }
-exports.getOSRelease = getOSRelease;
-function macosRelease(release) {
-    const macRelease = Number((release || os_1.default.release()).split('.')[0]);
-    const [name, version] = nameMap.get(macRelease) || ['Unknown', ''];
-    return {
-        name,
-        version,
-    };
-}
-exports["default"] = macosRelease;
-const nameMap = new Map([
-    [22, ['Ventura', '13']],
-    [21, ['Monterey', '12']],
-    [20, ['Big Sur', '11']],
-    [19, ['Catalina', '10.15']],
-    [18, ['Mojave', '10.14']],
-    [17, ['High Sierra', '10.13']],
-    [16, ['Sierra', '10.12']],
-    [15, ['El Capitan', '10.11']],
-    [14, ['Yosemite', '10.10']],
-    [13, ['Mavericks', '10.9']],
-    [12, ['Mountain Lion', '10.8']],
-    [11, ['Lion', '10.7']],
-    [10, ['Snow Leopard', '10.6']],
-    [9, ['Leopard', '10.5']],
-    [8, ['Tiger', '10.4']],
-    [7, ['Panther', '10.3']],
-    [6, ['Jaguar', '10.2']],
-    [5, ['Puma', '10.1']],
-]);
+exports.getLinuxOSReleaseInfo = getLinuxOSReleaseInfo;
 
 
 /***/ }),

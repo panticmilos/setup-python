@@ -123,60 +123,17 @@ export function isCacheFeatureAvailable(): boolean {
   return true;
 }
 
-export async function getOSRelease() {
-  if(IS_WINDOWS) {
-    return os.release();
-  } else if(IS_LINUX) {
-    const versionId = await exec.getExecOutput('lsb_release', ['-a']);
-    let osVersion = ''
-    let osRelease = ''
+export async function getLinuxOSReleaseInfo() {
+  const versionId = await exec.getExecOutput('lsb_release', ['-a']);
+  let osVersion = ''
+  let osRelease = ''
 
-    core.info("1")
-    core.info(versionId.stdout)
-    core.info("2")
+  versionId.stdout.split('\n').forEach(elem => {
+    if(elem.includes('Distributor')) osVersion = elem.split(':')[1].trim()
+    if(elem.includes('Release')) osRelease = elem.split(':')[1].trim()
+  })
 
-    versionId.stdout.split('\n').forEach(elem => {
-      if(elem.includes('Distributor')) osVersion = elem.split(':')[1].trim()
-      if(elem.includes('Release')) osRelease = elem.split(':')[1].trim()
-    })
-
-    core.info(osRelease)
-    core.info(osVersion)
-    return `${osVersion}-${osRelease}`
-  } else {
-    const macOSRelease = macosRelease(os.release());
-    return `${macOSRelease.name}_${macOSRelease.version}`
-  }
+  core.info(osRelease)
+  core.info(osVersion)
+  return `${osVersion}-${osRelease}`
 }
-
-export default function macosRelease(release : string) {
-	const macRelease = Number((release || os.release()).split('.')[0]);
-
-	const [name, version] = nameMap.get(macRelease) || ['Unknown', ''];
-
-	return {
-		name,
-		version,
-	};
-}
-
-const nameMap = new Map([
-	[22, ['Ventura', '13']],
-	[21, ['Monterey', '12']],
-	[20, ['Big Sur', '11']],
-	[19, ['Catalina', '10.15']],
-	[18, ['Mojave', '10.14']],
-	[17, ['High Sierra', '10.13']],
-	[16, ['Sierra', '10.12']],
-	[15, ['El Capitan', '10.11']],
-	[14, ['Yosemite', '10.10']],
-	[13, ['Mavericks', '10.9']],
-	[12, ['Mountain Lion', '10.8']],
-	[11, ['Lion', '10.7']],
-	[10, ['Snow Leopard', '10.6']],
-	[9, ['Leopard', '10.5']],
-	[8, ['Tiger', '10.4']],
-	[7, ['Panther', '10.3']],
-	[6, ['Jaguar', '10.2']],
-	[5, ['Puma', '10.1']],
-]);
