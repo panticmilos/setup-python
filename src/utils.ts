@@ -10,6 +10,9 @@ export const WINDOWS_ARCHS = ['x86', 'x64'];
 export const WINDOWS_PLATFORMS = ['win32', 'win64'];
 const PYPY_VERSION_FILE = 'PYPY_VERSION';
 
+import * as exec from '@actions/exec';
+
+import os from 'os';
 export interface IPyPyManifestAsset {
   filename: string;
   arch: string;
@@ -118,4 +121,19 @@ export function isCacheFeatureAvailable(): boolean {
   }
 
   return true;
+}
+
+export async function getLinuxOSReleaseInfo() {
+  const versionId = await exec.getExecOutput('lsb_release', ['-a']);
+  let osVersion = ''
+  let osRelease = ''
+
+  versionId.stdout.split('\n').forEach(elem => {
+    if(elem.includes('Distributor')) osVersion = elem.split(':')[1].trim()
+    if(elem.includes('Release')) osRelease = elem.split(':')[1].trim()
+  })
+
+  core.info(osRelease)
+  core.info(osVersion)
+  return `${osVersion}-${osRelease}`
 }
