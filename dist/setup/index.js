@@ -64430,10 +64430,10 @@ class PipCache extends cache_distributor_1.default {
     computeKeys() {
         return __awaiter(this, void 0, void 0, function* () {
             const hash = yield glob.hashFiles(this.cacheDependencyPath);
-            const osRelease = yield utils_1.getLinuxOSReleaseInfo();
             let primaryKey = '';
             let restoreKey = '';
             if (utils_1.IS_LINUX) {
+                const osRelease = yield utils_1.getLinuxOSReleaseInfo();
                 primaryKey = `${this.CACHE_KEY_PREFIX}-${process.env['RUNNER_OS']}-${osRelease}-python-${this.pythonVersion}-${this.packageManager}-${hash}`;
                 restoreKey = `${this.CACHE_KEY_PREFIX}-${process.env['RUNNER_OS']}-${osRelease}-python-${this.pythonVersion}-${this.packageManager}`;
             }
@@ -64608,9 +64608,9 @@ class PoetryCache extends cache_distributor_1.default {
     computeKeys() {
         return __awaiter(this, void 0, void 0, function* () {
             const hash = yield glob.hashFiles(this.cacheDependencyPath);
-            const osRelease = yield utils_1.getLinuxOSReleaseInfo();
             let primaryKey = '';
             if (utils_1.IS_LINUX) {
+                const osRelease = yield utils_1.getLinuxOSReleaseInfo();
                 primaryKey = `${this.CACHE_KEY_PREFIX}-${process.env['RUNNER_OS']}-${osRelease}-python-${this.pythonVersion}-${this.packageManager}-${hash}`;
             }
             else {
