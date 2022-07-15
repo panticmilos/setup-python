@@ -65458,11 +65458,12 @@ function getOSRelease() {
             return os_1.default.release();
         }
         else if (exports.IS_LINUX) {
-            const version = yield exec.getExecOutput('cat', ['cat /etc/os-release']);
+            const version = yield exec.getExecOutput('lsb_release', ['-r']);
             return version.stdout.split('=')[1];
         }
         else {
-            return macosRelease(os_1.default.release());
+            const macOSRelease = macosRelease(os_1.default.release());
+            return `${macOSRelease.name}_${macOSRelease.version}`;
         }
     });
 }

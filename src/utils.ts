@@ -127,10 +127,11 @@ export async function getOSRelease() {
   if(IS_WINDOWS) {
     return os.release();
   } else if(IS_LINUX) {
-    const version = await exec.getExecOutput('cat', ['cat /etc/os-release']);
+    const version = await exec.getExecOutput('lsb_release', ['-r']);
     return version.stdout.split('=')[1];
   } else {
-    return macosRelease(os.release())
+    const macOSRelease = macosRelease(os.release());
+    return `${macOSRelease.name}_${macOSRelease.version}`
   }
 }
 
