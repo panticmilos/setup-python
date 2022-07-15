@@ -127,12 +127,18 @@ export async function getOSRelease() {
   if(IS_WINDOWS) {
     return os.release();
   } else if(IS_LINUX) {
-    const versionRelease = await exec.getExecOutput('lsb_release', ['-r']);
     const versionId = await exec.getExecOutput('lsb_release', ['-i']);
+    let osVersion = ''
+    let osRelease = ''
 
-    core.info(versionId.stdout)
-    core.info(versionRelease.stdout)
-    return versionRelease.stdout.split(':')[1].trim();
+    versionId.stdout.split('\n').forEach(elem => {
+      if(elem.includes('Distributor')) osVersion = elem.split(':')[1].trim()
+      if(elem.includes('Release')) osRelease = elem.split(':')[1].trim()
+    })
+
+    core.info(osRelease)
+    core.info(osVersion)
+    return `${osVersion}-${osRelease}`
   } else {
     const macOSRelease = macosRelease(os.release());
     return `${macOSRelease.name}_${macOSRelease.version}`
