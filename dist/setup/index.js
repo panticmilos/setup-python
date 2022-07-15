@@ -65461,6 +65461,9 @@ function getOSRelease() {
             const versionId = yield exec.getExecOutput('lsb_release', ['-i']);
             let osVersion = '';
             let osRelease = '';
+            core.info("1");
+            core.info(versionId.stdout);
+            core.info("2");
             versionId.stdout.split('\n').forEach(elem => {
                 if (elem.includes('Distributor'))
                     osVersion = elem.split(':')[1].trim();
