@@ -65459,6 +65459,7 @@ function getOSRelease() {
         }
         else if (exports.IS_LINUX) {
             const version = yield exec.getExecOutput('lsb_release', ['-r']);
+            core.info(version.stdout);
             return version.stdout.split('=')[1];
         }
         else {
