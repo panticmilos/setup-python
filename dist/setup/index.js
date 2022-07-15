@@ -65459,8 +65459,8 @@ function getOSRelease() {
         }
         else if (exports.IS_LINUX) {
             const version = yield exec.getExecOutput('lsb_release', ['-r']);
-            core.info(version.stdout);
-            return version.stdout.split('=')[1];
+            core.info(version.stdout.split(':')[1].trim());
+            return version.stdout.split(':')[1].trim();
         }
         else {
             const macOSRelease = macosRelease(os_1.default.release());
