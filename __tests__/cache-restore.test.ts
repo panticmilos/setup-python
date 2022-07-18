@@ -114,7 +114,7 @@ virtualenvs.path = "{cache-dir}/virtualenvs"  # /Users/patrick/Library/Caches/py
           dependencyFile
         );
 
-        if (process.platform.toLowerCase() === 'linux') {
+        if (process.platform === 'linux') {
           computeKeysSpy.mockImplementation(() =>
             Promise.resolve('Ubuntu-20.4')
           );
@@ -133,7 +133,7 @@ virtualenvs.path = "{cache-dir}/virtualenvs"  # /Users/patrick/Library/Caches/py
 
         await cacheDistributor.restoreCache();
 
-        if (process.platform.toLowerCase() === 'linux') {
+        if (process.platform === 'linux') {
           expect(infoSpy).toHaveBeenCalledWith(
             `Cache restored from key: setup-python-${process.env['RUNNER_OS']}-Ubuntu-20.4-python-${pythonVersion}-${packageManager}-${fileHash}`
           );
