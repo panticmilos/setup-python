@@ -61,6 +61,8 @@ class PipCache extends CacheDistributor {
     let restoreKey = '';
 
     console.log(process.platform, 'This is current platform');
+    console.log(IS_LINUX, 'IS LINUX');
+    console.log(IS_WINDOWS, 'IS WINDOWS');
     if (IS_LINUX) {
       console.log('here');
       const osRelease = await getLinuxOSReleaseInfo();

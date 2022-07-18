@@ -64433,6 +64433,8 @@ class PipCache extends cache_distributor_1.default {
             let primaryKey = '';
             let restoreKey = '';
             console.log(process.platform, 'This is current platform');
+            console.log(utils_1.IS_LINUX, 'IS LINUX');
+            console.log(utils_1.IS_WINDOWS, 'IS WINDOWS');
             if (utils_1.IS_LINUX) {
                 console.log('here');
                 const osRelease = yield utils_1.getLinuxOSReleaseInfo();

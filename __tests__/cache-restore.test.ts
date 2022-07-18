@@ -120,17 +120,6 @@ virtualenvs.path = "{cache-dir}/virtualenvs"  # /Users/patrick/Library/Caches/py
           computeKeysSpy.mockImplementation(() =>
             Promise.resolve('Ubuntu-20.4')
           );
-          Object.defineProperty(utils, 'IS_LINUX', {
-            value: () => {
-              jest.fn().mockImplementation(() => true);
-            }
-          });
-        } else {
-          Object.defineProperty(utils, 'IS_LINUX', {
-            value: () => {
-              jest.fn().mockReturnValue(() => false);
-            }
-          });
         }
 
         await cacheDistributor.restoreCache();
