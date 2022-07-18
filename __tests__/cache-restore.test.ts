@@ -118,15 +118,15 @@ virtualenvs.path = "{cache-dir}/virtualenvs"  # /Users/patrick/Library/Caches/py
           computeKeysSpy.mockImplementation(() =>
             Promise.resolve('Ubuntu-20.4')
           );
-          Object.defineProperty(utils, 'IS_LINUX', {
+          Object.defineProperty(process, 'platform', {
             value: () => {
-              jest.fn().mockImplementation(() => true);
+              jest.fn().mockImplementation(() => 'linux');
             }
           });
         } else {
-          Object.defineProperty(utils, 'IS_LINUX', {
+          Object.defineProperty(process, 'platform', {
             value: () => {
-              jest.fn().mockReturnValue(() => false);
+              jest.fn().mockReturnValue(() => 'win32');
             }
           });
         }
