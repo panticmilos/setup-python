@@ -114,19 +114,21 @@ virtualenvs.path = "{cache-dir}/virtualenvs"  # /Users/patrick/Library/Caches/py
           dependencyFile
         );
 
+        console.log(process.platform, "PLATFORM");
+
         if (process.platform === 'linux') {
           computeKeysSpy.mockImplementation(() =>
             Promise.resolve('Ubuntu-20.4')
           );
-          Object.defineProperty(process, 'platform', {
+          Object.defineProperty(utils, 'IS_LINUX', {
             value: () => {
-              jest.fn().mockImplementation(() => 'linux');
+              jest.fn().mockImplementation(() => true);
             }
           });
         } else {
-          Object.defineProperty(process, 'platform', {
+          Object.defineProperty(utils, 'IS_LINUX', {
             value: () => {
-              jest.fn().mockReturnValue(() => 'win32');
+              jest.fn().mockReturnValue(() => false);
             }
           });
         }
