@@ -114,7 +114,7 @@ virtualenvs.path = "{cache-dir}/virtualenvs"  # /Users/patrick/Library/Caches/py
           dependencyFile
         );
 
-        console.log(process.platform, "PLATFORM");
+        console.log(process.platform, 'PLATFORM');
 
         if (process.platform === 'linux') {
           computeKeysSpy.mockImplementation(() =>
