@@ -64432,12 +64432,15 @@ class PipCache extends cache_distributor_1.default {
             const hash = yield glob.hashFiles(this.cacheDependencyPath);
             let primaryKey = '';
             let restoreKey = '';
+            console.log(process.platform, 'This is current platform');
             if (utils_1.IS_LINUX) {
+                console.log('here');
                 const osRelease = yield utils_1.getLinuxOSReleaseInfo();
                 primaryKey = `${this.CACHE_KEY_PREFIX}-${process.env['RUNNER_OS']}-${osRelease}-python-${this.pythonVersion}-${this.packageManager}-${hash}`;
                 restoreKey = `${this.CACHE_KEY_PREFIX}-${process.env['RUNNER_OS']}-${osRelease}-python-${this.pythonVersion}-${this.packageManager}`;
             }
             else {
+                console.log('here2');
                 primaryKey = `${this.CACHE_KEY_PREFIX}-${process.env['RUNNER_OS']}-python-${this.pythonVersion}-${this.packageManager}-${hash}`;
                 restoreKey = `${this.CACHE_KEY_PREFIX}-${process.env['RUNNER_OS']}-python-${this.pythonVersion}-${this.packageManager}`;
             }
