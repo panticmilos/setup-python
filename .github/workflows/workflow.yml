@@ -48,14 +48,14 @@ jobs:
       run: python __tests__/verify-python.py 3.6
 
     - name: Run with setup-python 3.7
-      uses: ./
+      uses: actions/setup-python@main
       with:
         python-version: 3.7
     - name: Verify 3.7
       run: python __tests__/verify-python.py 3.7
 
     - name: Run with setup-python 3.8
-      uses: ./
+      uses: actions/setup-python@main
       with:
         python-version: 3.8
     - name: Verify 3.8
